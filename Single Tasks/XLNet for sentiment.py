@@ -62,6 +62,23 @@ for seq in input_ids_train:
 for seq in input_ids_val:
   seq_mask = [float(i>0) for i in seq]
   attention_masks_val.append(seq_mask)
+  
+train_inputs = torch.tensor(input_ids_train)
+validation_inputs = torch.tensor(input_ids_val)
+train_labels = torch.tensor(train_labels)
+validation_labels = torch.tensor(validation_labels)
+train_masks = torch.tensor(attention_masks_train)
+validation_masks = torch.tensor(attention_masks_val)
+  
+batch_size = 32
+
+train_data = TensorDataset(train_inputs, train_masks, train_labels)
+train_sampler = RandomSampler(train_data)
+train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=batch_size)
+
+validation_data = TensorDataset(validation_inputs, validation_masks, validation_labels)
+validation_sampler = SequentialSampler(validation_data)
+validation_dataloader = DataLoader(validation_data, sampler=validation_sampler, batch_size=batch_size)
 
 model = XLNetForSequenceClassification.from_pretrained("xlnet-base-cased", num_labels=5)
 model.cuda()
