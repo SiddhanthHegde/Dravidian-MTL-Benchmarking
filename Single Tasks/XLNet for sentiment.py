@@ -63,6 +63,8 @@ for seq in input_ids_val:
   seq_mask = [float(i>0) for i in seq]
   attention_masks_val.append(seq_mask)
   
+train_labels, validation_labels = df_train['label'].values.tolist(), df_val['label'].values.tolist()
+  
 train_inputs = torch.tensor(input_ids_train)
 validation_inputs = torch.tensor(input_ids_val)
 train_labels = torch.tensor(train_labels)
