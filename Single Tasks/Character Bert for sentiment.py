@@ -20,6 +20,15 @@ def epoch_time(start_time, end_time):
   elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
   return elapsed_mins, elapsed_secs
 
+config = BertConfig.from_pretrained('bert-base-uncased', num_labels=5) 
+model = BertForSequenceClassification(config=config)
+character_bert_model = CharacterBertModel.from_pretrained(
+    './pretrained-models/medical_character_bert/')
+model.bert = character_bert_model
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model.cuda()
+device='cuda'
+
 df_train = pd.read_csv('kannada_sentiment.csv')
 df_train['sentiment'], uniq = pd.factorize(df_train['sentiment'])
 X = df_train['comment'].tolist()
@@ -38,15 +47,6 @@ val_data = TensorDataset(X_test, y_test)
 val_dataloader = DataLoader(val_data,batch_size=batch_size)
 
 loss_fn = nn.CrossEntropyLoss().to(device)
-
-config = BertConfig.from_pretrained('bert-base-uncased', num_labels=5) 
-model = BertForSequenceClassification(config=config)
-character_bert_model = CharacterBertModel.from_pretrained(
-    './pretrained-models/medical_character_bert/')
-model.bert = character_bert_model
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model.cuda()
-device='cuda'
 
 epochs = 2
 train_loss_set = []
