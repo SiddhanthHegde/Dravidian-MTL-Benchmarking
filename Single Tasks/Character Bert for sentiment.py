@@ -46,6 +46,16 @@ train_dataloader = DataLoader(train_data,batch_size=batch_size)
 val_data = TensorDataset(X_test, y_test)
 val_dataloader = DataLoader(val_data,batch_size=batch_size)
 
+param_optimizer = list(model.named_parameters())
+no_decay = ['bias', 'gamma', 'beta']
+optimizer_grouped_parameters = [
+    {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.01},
+    {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.0}
+]
+optimizer = AdamW(optimizer_grouped_parameters,lr=2e-5)
+
 loss_fn = nn.CrossEntropyLoss().to(device)
 
 epochs = 2
