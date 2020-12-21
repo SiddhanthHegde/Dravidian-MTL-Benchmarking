@@ -22,7 +22,7 @@ def epoch_time(start_time, end_time):
 
 df_train = pd.read_csv('kannada_sentiment.csv')
 df_train['sentiment'], uniq = pd.factorize(df_train['sentiment'])
-X = df['comment'].tolist()
+X = df_train['comment'].tolist()
 tokenized = [tokenizer.basic_tokenizer.tokenize(text) for text in X]
 indexer = CharacterIndexer()  # This converts each token into a list of character indices
 input_tensor = indexer.as_padded_tensor(tokenized)
