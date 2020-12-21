@@ -46,6 +46,7 @@ character_bert_model = CharacterBertModel.from_pretrained(
 model.bert = character_bert_model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model.cuda()
+device='cuda'
 
 epochs = 2
 train_loss_set = []
