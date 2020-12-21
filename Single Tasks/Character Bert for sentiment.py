@@ -20,9 +20,18 @@ def epoch_time(start_time, end_time):
   elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
   return elapsed_mins, elapsed_secs
 
+config = BertConfig.from_pretrained('bert-base-uncased', num_labels=5) 
+model = BertForSequenceClassification(config=config)
+character_bert_model = CharacterBertModel.from_pretrained(
+    './pretrained-models/medical_character_bert/')
+model.bert = character_bert_model
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model.cuda()
+device='cuda'
+
 df_train = pd.read_csv('kannada_sentiment.csv')
 df_train['sentiment'], uniq = pd.factorize(df_train['sentiment'])
-X = df['comment'].tolist()
+X = df_train['comment'].tolist()
 tokenized = [tokenizer.basic_tokenizer.tokenize(text) for text in X]
 indexer = CharacterIndexer()  # This converts each token into a list of character indices
 input_tensor = indexer.as_padded_tensor(tokenized)
@@ -37,15 +46,17 @@ train_dataloader = DataLoader(train_data,batch_size=batch_size)
 val_data = TensorDataset(X_test, y_test)
 val_dataloader = DataLoader(val_data,batch_size=batch_size)
 
-loss_fn = nn.CrossEntropyLoss().to(device)
+param_optimizer = list(model.named_parameters())
+no_decay = ['bias', 'gamma', 'beta']
+optimizer_grouped_parameters = [
+    {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.01},
+    {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)],
+     'weight_decay_rate': 0.0}
+]
+optimizer = AdamW(optimizer_grouped_parameters,lr=2e-5)
 
-config = BertConfig.from_pretrained('bert-base-uncased', num_labels=5) 
-model = BertForSequenceClassification(config=config)
-character_bert_model = CharacterBertModel.from_pretrained(
-    './pretrained-models/medical_character_bert/')
-model.bert = character_bert_model
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model.cuda()
+loss_fn = nn.CrossEntropyLoss().to(device)
 
 epochs = 2
 train_loss_set = []
