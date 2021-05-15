@@ -22,8 +22,9 @@ def create_data_loader(df,tokenizer,max_len,batch_size,shuffle=True):
     shuffle = shuffle,
     num_workers=4)
 
-def train_epoch(model,data_loader,loss_1,loss_2,optimizer,device,scheduler,n_examples):
-  model = model.train()
+def train_epoch(model1,model2,data_loader,loss_1,loss_2,optimizer1,optimizer2,device,n_examples):
+  model1 = model1.train()
+  model2 = model2.train()
   losses = []
   correct_predictions1 = 0
   correct_predictions2 = 0
@@ -34,16 +35,24 @@ def train_epoch(model,data_loader,loss_1,loss_2,optimizer,device,scheduler,n_exa
     labels1 = data['label1'].to(device)
     labels2 = data['label2'].to(device)
 
-    out1,out2 = model(
+    out1= model1(
         input_ids=input_ids,
         attention_mask=attention_mask
         )
+
+    out2= model2(
+        input_ids=input_ids,
+        attention_mask=attention_mask
+        )
+
+
     _, preds1 = torch.max(out1, dim=1)
     _, preds2 = torch.max(out2, dim=1)
 
     _, org1 = torch.max(labels1, dim=1)
     _, org2 = torch.max(labels2, dim=1)
 
+    norm = torch.norm(model1.out1.weight - model2.out1.weight) ** 2
     loss1 = loss_1(out1,labels1)
     loss2 = loss_2(out2,labels2)
 
@@ -54,16 +63,17 @@ def train_epoch(model,data_loader,loss_1,loss_2,optimizer,device,scheduler,n_exa
     losses.append(loss.item())
 
     loss.backward()
-    nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-    optimizer.step()
-    scheduler.step()
-    optimizer.zero_grad()
+    optimizer1.step()
+    optimizer2.step()
+    optimizer1.zero_grad()
+    optimizer2.zero_grad()
 
   return correct_predictions1.double() / n_examples, correct_predictions2.double() / n_examples
 
-def eval_model(model, data_loader, loss_1,loss_2, device, n_examples):
+def eval_model(model1,model2, data_loader, loss_1,loss_2, device, n_examples):
 
-  model = model.eval()
+  model1 = model1.eval()
+  model2 = model2.eval()
   correct_predictions1 = 0
   correct_predictions2 = 0
   f_pred1 = []
@@ -74,10 +84,16 @@ def eval_model(model, data_loader, loss_1,loss_2, device, n_examples):
       attention_mask = d["attention_mask"].to(device)
       labels1 = d["label1"].to(device)
       labels2 = d['label2'].to(device)
-      out1, out2 = model(
+      out1 = model1(
         input_ids=input_ids,
         attention_mask=attention_mask
       )
+
+      out2 = model2(
+        input_ids=input_ids,
+        attention_mask=attention_mask
+      )
+      
       _, preds1 = torch.max(out1, dim=1)
       _, preds2 = torch.max(out2, dim=1)
 
