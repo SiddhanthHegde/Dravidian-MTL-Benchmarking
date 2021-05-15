@@ -104,6 +104,7 @@ for loss in losses:
     classification_reports_1.append(classification_report(y_test1, y_pred1, target_names=uniq1,zero_division=0))
     classification_reports_2.append(classification_report(y_test2, y_pred2, target_names=uniq2,zero_division=0))
 
-    
+print(classification_reports_1)
+print(classification_reports_2)
 
 
