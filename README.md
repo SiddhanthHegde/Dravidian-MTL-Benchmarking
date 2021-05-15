@@ -9,13 +9,13 @@ This is the code for the paper "Benchmarking Multi-Task Learning for Sentiment A
 
 Steps given above can be used for Kannada, Malayalam and Tamil. For custom datasets make sure you have a csv file with 'comment', 'sent', 'off' as the column names and they can be used as well.
 
-## Steps to run Multi Task Models:
+## [Steps to run Multi Task Models:](https://github.com/SiddhanthHegde/Dravidian-MTL-Benchmarking/tree/main/Multi%20Tasks)
 
 For Hard Parameter sharing and Soft parameter sharing use the train.py file. Find the string 'read_csv'. Change the path to the dataset where you have stored and run the program on the terminal.
 
 
 Message: Please cite the following when using this code
-``` *
+```
 @article{Hande-etal-Multitask,
     title = "Benchmarking Multi-Task Learning for Sentiment Analysis and Offensive Language Identification in Under-Resourced Dravidian Languages",
     author = "Hande, Adeep  and
@@ -28,4 +28,4 @@ Message: Please cite the following when using this code
       journal={Cognitive Computation},
       publisher={Springer}
     }
-*```
+```
