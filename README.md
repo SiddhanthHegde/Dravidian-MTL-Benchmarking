@@ -28,7 +28,7 @@ Message: Please cite the following when using this code
       Kumaresan, Prasanna Kumar and
       Thavareesan, Sajeetha and
       Chakravarthi, Bharathi Raja ",
-      journal={Cognitive Computation},
+      journal={Soft Computing},
       publisher={Springer}
     }
 ```
