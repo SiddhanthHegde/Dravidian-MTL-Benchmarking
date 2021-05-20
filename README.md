@@ -2,6 +2,9 @@
 
 This is the code for the paper "Benchmarking Multi-Task Learning for Sentiment Analysis and Offensive Language Identification in Under-Resourced Dravidian Languages"
 
+This work is colloborative work by Adeep Hande, Siddhanth U Hegde, Ruba Priyadharshini, Rahul Ponnusamy, Prassana Kumar Kumaresan, Sajeetha Thavareesan,and Bharathi Raja Chakravarthi. 
+
+
 ## [Steps to run Single Task Models:](https://github.com/SiddhanthHegde/Dravidian-MTL-Benchmarking/tree/main/Single%20Tasks)
 1) For character BERT, XLM and XLNet run the specific task file and find the string 'read_csv'. Change the path to the dataset where you have stored and run the program on the terminal
 
